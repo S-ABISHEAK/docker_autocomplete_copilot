@@ -1,0 +1,49 @@
+{
+  "name": "dockerfile-autocomplete",
+  "displayName": "Dockerfile Autocomplete",
+  "description": "Inline Dockerfile completions from a locally hosted 80M-param model.",
+  "version": "0.1.0",
+  "publisher": "sabisheak27",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages"],
+  "activationEvents": ["onLanguage:dockerfile"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Dockerfile Autocomplete",
+      "properties": {
+        "dockerfileAutocomplete.backendUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8123",
+          "description": "Base URL of the completion backend."
+        },
+        "dockerfileAutocomplete.requestTimeoutMs": {
+          "type": "number",
+          "default": 5000,
+          "description": "Timeout for a single completion request, in milliseconds."
+        },
+        "dockerfileAutocomplete.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "description": "Delay after typing stops before requesting a completion, in milliseconds."
+        },
+        "dockerfileAutocomplete.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline Dockerfile completions."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  }
+}

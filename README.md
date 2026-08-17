@@ -22,6 +22,8 @@
 - [Performance](#performance)
 - [Advanced configuration](#advanced-configuration)
 - [Project structure](#project-structure)
+- [Known limitations](#known-limitations)
+- [Roadmap](#roadmap)
 - [Why local, not cloud](#why-local-not-cloud)
 - [License](#license)
 

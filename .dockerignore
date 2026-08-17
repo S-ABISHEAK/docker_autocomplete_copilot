@@ -1,0 +1,25 @@
+# .venv/
+# extension/
+# scripts/
+# model/checkpoints/dockerfile-lm-v1.pt
+# model/architecture.py
+# model/__pycache__/
+# backend/**/__pycache__/
+# **/__pycache__/
+# .git/
+# *.pyc
+
+.venv/
+extension/
+scripts/
+
+model/checkpoints/dockerfile-lm-v1.pt
+model/checkpoints/checkpoint_08.pt
+model/architecture.py
+
+model/**/__pycache__/
+backend/**/__pycache__/
+**/__pycache__/
+
+.git/
+*.pyc

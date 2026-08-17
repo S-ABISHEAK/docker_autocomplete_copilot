@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Model weights (hosted on Docker Hub / Hugging Face, not in git)
+model/checkpoints/
+
+# PyInstaller build artifacts
+build/
+dist/
+
+# tiktoken cache used only for bundling the standalone executable
+.tiktoken_cache/
+
+# Node / extension build output
+extension/node_modules/
+extension/out/
+
+# Local scratch / working notes, not project source
+temp/
+cloud_run_handoff.txt
+
+# Editor / tooling
+.claude/
+.vscode/

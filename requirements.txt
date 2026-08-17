@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+tiktoken
+numpy
+onnx
+onnxruntime
+fastapi
+uvicorn
+huggingface_hub

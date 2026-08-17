@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+onnxruntime
+tiktoken
+numpy
