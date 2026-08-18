@@ -87,7 +87,11 @@ Trained entirely from scratch — not a fine-tune of an existing base model.
 
 ## Quickstart
 
-**1. Start the backend** (pick one — no cloud account needed either way):
+**Prerequisites:** [VS Code](https://code.visualstudio.com), and either Docker Desktop **or** the standalone binary from the [Releases](../../releases) page (Linux only for now — Windows/Mac builds aren't published yet).
+
+### 1. Start the backend
+
+Pick one — no cloud account needed either way. Leave this terminal running in the background; the extension needs it available the whole time you're using completions.
 
 ```bash
 # Option A: Docker
@@ -98,17 +102,55 @@ docker pull sabisheak27/dockerfile-autocomplete:latest
 
 docker run --rm -p 8123:8080 sabisheak27/dockerfile-autocomplete:latest
 
-# Option B: standalone binary (no Docker required)
+# Option B: standalone binary (download from Releases first, no Docker required)
+chmod +x dockerfile-autocomplete-server
 ./dockerfile-autocomplete-server
 ```
 
-**2. Install the extension**
+### 2. Confirm it's actually running
 
-Download `dockerfile-autocomplete-0.1.0.vsix`, then in VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → select the file.
+In a second terminal:
 
-**3. Use it**
+```bash
+curl http://127.0.0.1:8123/health
+```
 
-Open or create a `Dockerfile`, start typing, and pause for a moment — an inline suggestion appears. Press `Tab` to accept, or keep typing to dismiss it.
+You should get back `{"status":"ready"}`. If this fails, stop here and fix it first — nothing past this point will work otherwise (check Docker is running, or that the port isn't already taken).
+
+### 3. Install the extension
+
+The packaged extension file lives at **[`extension/dockerfile-autocomplete-0.1.0.vsix`](extension/dockerfile-autocomplete-0.1.0.vsix)** in this repo.
+
+- Download that file.
+- In VS Code, open the **Extensions** view (`Ctrl+Shift+X`).
+- Click the **`...`** menu at the top of that panel → **Install from VSIX...**
+- Select the downloaded file.
+
+### 4. Open or create a Dockerfile
+
+- File → New Text File, save it as `Dockerfile` (no extension), or any `.dockerfile` file.
+- Check the **bottom-right status bar** — it must say **"Dockerfile"**. If it says "Plain Text," click it and select "Dockerfile" from the list manually.
+
+### 5. Use it
+
+Type something like:
+
+```
+FROM python:3.11-slim
+
+WORKDIR /app
+RUN 
+```
+
+Pause briefly after `RUN ` — faint gray ghost text should appear. Press **Tab** to accept it, or keep typing to dismiss it.
+
+### If no suggestions appear
+
+1. Is the backend terminal from step 1 still running, with no errors?
+2. Does `curl http://127.0.0.1:8123/health` from step 2 still succeed?
+3. Is the file's language mode really "Dockerfile," not "Plain Text"?
+4. Check the `dockerfileAutocomplete.enabled` setting is `true` (`Ctrl+,` → search "dockerfile autocomplete").
+5. Check `Ctrl+Shift+U` (Output panel) → dropdown → "Log (Extension Host)" for errors.
 
 ## Performance
 
