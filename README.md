@@ -91,6 +91,11 @@ Trained entirely from scratch — not a fine-tune of an existing base model.
 
 ```bash
 # Option A: Docker
+
+pull the image : 
+
+docker pull sabisheak27/dockerfile-autocomplete:latest
+
 docker run --rm -p 8123:8080 sabisheak27/dockerfile-autocomplete:latest
 
 # Option B: standalone binary (no Docker required)
