@@ -232,7 +232,7 @@ main{
 
 .section{
   padding:5.5rem clamp(1.5rem, 5vw, 4rem);
-  max-width:1180px;
+  max-width:1440px;
   border-bottom:1px solid var(--line-soft);
 }
 
@@ -399,6 +399,7 @@ main{
 /* ---------- feature grid ---------- */
 .grid{display:grid; gap:1.1rem; margin-top:2.4rem;}
 .features{grid-template-columns:repeat(3, 1fr);}
+@media (min-width:1700px){.features{grid-template-columns:repeat(4,1fr);}}
 @media (max-width:900px){.features{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:620px){.features{grid-template-columns:1fr;}}
 
@@ -504,7 +505,7 @@ main{
 .stack-block.hi{color:var(--accent); border-color:var(--accent-soft);}
 
 /* ---------- performance ---------- */
-.stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-top:2.4rem;}
+.stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-top:2.4rem; max-width:1080px;}
 @media (max-width:760px){.stat-grid{grid-template-columns:1fr;}}
 .stat-tile{
   background:var(--glass-bg);
@@ -629,7 +630,7 @@ table.cfg td:last-child{color:var(--paper-dim);}
 /* ---------- footer ---------- */
 footer{
   padding:3.5rem clamp(1.5rem, 5vw, 4rem) 4rem;
-  max-width:1180px;
+  max-width:1440px;
 }
 .tree{
   background:var(--panel);
