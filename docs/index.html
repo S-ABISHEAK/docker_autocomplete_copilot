@@ -450,6 +450,57 @@ main{
   font-size:1.1rem;
 }
 
+@media (prefers-reduced-motion: no-preference){
+  .flow-step{ animation:flowpulse 3.6s ease-in-out infinite; }
+  .flow-step:nth-child(1){ animation-delay:0s; }
+  .flow-step:nth-child(3){ animation-delay:0.5s; }
+  .flow-step:nth-child(5){ animation-delay:1s; }
+  .flow-step:nth-child(7){ animation-delay:1.5s; }
+  .flow-step:nth-child(9){ animation-delay:2s; }
+  .flow-arrow{ animation:arrowpulse 3.6s ease-in-out infinite; }
+  .flow-arrow:nth-child(2){ animation-delay:0.25s; }
+  .flow-arrow:nth-child(4){ animation-delay:0.75s; }
+  .flow-arrow:nth-child(6){ animation-delay:1.25s; }
+  .flow-arrow:nth-child(8){ animation-delay:1.75s; }
+}
+@keyframes flowpulse{
+  0%,78%,100%{ border-color:var(--glass-border); box-shadow:inset 0 1px 0 var(--glass-hi); }
+  8%{ border-color:var(--accent); box-shadow:inset 0 1px 0 var(--glass-hi), 0 0 26px rgba(36,150,237,0.5); }
+}
+@keyframes arrowpulse{
+  0%,78%,100%{ color:var(--line); text-shadow:none; }
+  8%{ color:var(--accent); text-shadow:0 0 10px rgba(36,150,237,0.75); }
+}
+
+/* ---------- engineering decisions ---------- */
+.decision-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; margin-top:2.4rem;}
+@media (max-width:760px){.decision-grid{grid-template-columns:1fr;}}
+.decision-grid .card h3{font-size:1.02rem;}
+
+/* ---------- compare table ---------- */
+table.compare{width:100%; max-width:760px; border-collapse:collapse;}
+table.compare th{
+  text-align:left; font-family:var(--font-mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em;
+  color:var(--paper-faint); border-bottom:1px solid var(--line); padding:0 0.6rem 0.6rem;
+}
+table.compare th:first-child, table.compare td:first-child{padding-left:0;}
+table.compare td{padding:0.75rem 0.6rem; border-bottom:1px solid var(--line-soft); font-size:0.88rem; color:var(--paper-dim);}
+table.compare td:first-child{color:var(--paper-faint); width:30%;}
+table.compare td.good{color:var(--signal); font-weight:600;}
+table.compare td.muted{color:var(--paper-faint);}
+
+/* ---------- status pill ---------- */
+.pill{
+  display:inline-flex; align-items:center; gap:0.5em;
+  font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--accent-soft); border-radius:999px;
+  padding:0.3rem 0.75rem; background:var(--accent-wash);
+}
+.pill .dot{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent);}
+@media (prefers-reduced-motion: no-preference){
+  .pill .dot{animation:pulse 2.2s ease-in-out infinite;}
+}
+
 /* ---------- model spec ---------- */
 .model-layout{display:grid; grid-template-columns:1.1fr 0.9fr; gap:3rem; margin-top:2.6rem; align-items:start;}
 @media (max-width:880px){.model-layout{grid-template-columns:1fr;}}
@@ -531,7 +582,10 @@ main{
 @media (max-width:600px){.bar-row{grid-template-columns:80px 1fr 100px; gap:0.6rem;}}
 .bar-row .bl{font-family:var(--font-mono); font-size:0.8rem; color:var(--paper-dim);}
 .bar-track{position:relative; height:22px; background:var(--panel-raised); border-radius:2px; overflow:hidden;}
-.bar-fill{position:absolute; top:0; left:0; bottom:0; background:var(--accent); border-radius:2px;}
+.bar-fill{position:absolute; top:0; left:0; bottom:0; background:var(--accent); border-radius:2px; width:0%;}
+@media (prefers-reduced-motion: no-preference){
+  .bar-fill{ transition:width 1.3s cubic-bezier(0.16,1,0.3,1); }
+}
 .bar-fill.range{background:linear-gradient(90deg, var(--accent) 0%, var(--accent) var(--split,50%), var(--accent-soft) var(--split,50%), var(--accent-soft) 100%); opacity:0.85;}
 .bar-row .bv{font-family:var(--font-mono); font-size:0.78rem; color:var(--paper); text-align:right;}
 .chart-note{font-size:0.85rem; color:var(--paper-faint); margin-top:1.4rem; max-width:64ch;}
@@ -695,10 +749,12 @@ footer{
     <li><a href="#what"><span class="idx">A</span> What it is</a></li>
     <li><a href="#how"><span class="idx">B</span> How it works</a></li>
     <li><a href="#model"><span class="idx">C</span> The model</a></li>
-    <li><a href="#performance"><span class="idx">D</span> Performance</a></li>
-    <li><a href="#install"><span class="idx">E</span> Install</a></li>
-    <li><a href="#config"><span class="idx">F</span> Configuration</a></li>
-    <li><a href="#why"><span class="idx">G</span> Why local</a></li>
+    <li><a href="#decisions"><span class="idx">D</span> Decisions</a></li>
+    <li><a href="#performance"><span class="idx">E</span> Performance</a></li>
+    <li><a href="#install"><span class="idx">F</span> Install</a></li>
+    <li><a href="#config"><span class="idx">G</span> Configuration</a></li>
+    <li><a href="#why"><span class="idx">H</span> Why local</a></li>
+    <li><a href="#roadmap"><span class="idx">I</span> What's next</a></li>
   </ul>
   <div class="rail-foot"><span class="dot"></span>runs on your machine</div>
 </nav>
@@ -836,26 +892,51 @@ footer{
   </div>
 </section>
 
-<section class="section" id="performance">
+<section class="section" id="decisions">
   <span class="eyebrow reveal">Section D</span>
+  <h2 class="section-title reveal">Engineering decisions</h2>
+  <p class="lede reveal">A few choices that shaped this project, and the tradeoffs behind them.</p>
+
+  <div class="grid decision-grid reveal">
+    <div class="card">
+      <h3>Trained from scratch, not fine-tuned</h3>
+      <p>Dockerfile/IaC syntax is narrow enough that an 80M-parameter model trained specifically on it can learn it well — and it removes any dependency on a pretrained base model's license, availability, or vocabulary.</p>
+    </div>
+    <div class="card">
+      <h3>ONNX Runtime for serving, not PyTorch</h3>
+      <p>Decouples the deployed runtime from the training framework. The ONNX Runtime CPU execution provider ships without a PyTorch dependency in the Docker image or standalone binary, and is just as fast at this model size.</p>
+    </div>
+    <div class="card">
+      <h3>64-token window, not the full 256 trained</h3>
+      <p>The model has no KV cache — it recomputes attention over the whole window on every generated token. Capping the deployed window well under the trained maximum trades some completion quality for latency that stays bounded and predictable.</p>
+    </div>
+    <div class="card">
+      <h3>Chunked, resumable training rounds</h3>
+      <p>Pretraining ran across many Kaggle GPU sessions, each with a hard time limit. The training loop checkpoints after every round under one continuous learning-rate schedule, so a session ending mid-training never means restarting or losing the schedule's place.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="performance">
+  <span class="eyebrow reveal">Section E</span>
   <h2 class="section-title reveal">Performance</h2>
   <p class="lede reveal">Measured on a CPU-only development laptop — no GPU involved anywhere in this path.</p>
 
   <div class="stat-grid reveal">
-    <div class="stat-tile"><span class="num tabular">44ms</span><span class="lbl">per generated token</span></div>
-    <div class="stat-tile"><span class="num tabular">0.7–1.4s</span><span class="lbl">typical completion latency</span></div>
-    <div class="stat-tile"><span class="num tabular">~475ms</span><span class="lbl">one-time cold-start warm-up</span></div>
+    <div class="stat-tile"><span class="num tabular"><span class="cnum" data-to="44" data-decimals="0">0</span>ms</span><span class="lbl">per generated token</span></div>
+    <div class="stat-tile"><span class="num tabular"><span class="cnum" data-to="0.7" data-decimals="1">0.0</span>–<span class="cnum" data-to="1.4" data-decimals="1">0.0</span>s</span><span class="lbl">typical completion latency</span></div>
+    <div class="stat-tile"><span class="num tabular">~<span class="cnum" data-to="475" data-decimals="0">0</span>ms</span><span class="lbl">one-time cold-start warm-up</span></div>
   </div>
 
   <div class="bar-chart reveal">
     <div class="bar-row">
       <span class="bl">64 tokens</span>
-      <div class="bar-track"><div class="bar-fill" style="width:14%"></div></div>
+      <div class="bar-track"><div class="bar-fill" data-width="14%"></div></div>
       <span class="bv">~0.55s</span>
     </div>
     <div class="bar-row">
       <span class="bl">200 tokens</span>
-      <div class="bar-track"><div class="bar-fill range" style="width:97%; --split:44%;"></div></div>
+      <div class="bar-track"><div class="bar-fill range" data-width="97%" style="--split:44%;"></div></div>
       <span class="bv">1.7–3.9s</span>
     </div>
   </div>
@@ -863,7 +944,7 @@ footer{
 </section>
 
 <section class="section" id="install">
-  <span class="eyebrow reveal">Section E</span>
+  <span class="eyebrow reveal">Section F</span>
   <h2 class="section-title reveal">Install manifest</h2>
   <p class="lede reveal">Prerequisites: <a href="https://code.visualstudio.com" target="_blank" rel="noopener">VS Code</a>, and either Docker Desktop or the standalone Linux binary from the project's Releases page.</p>
 
@@ -944,7 +1025,7 @@ RUN </pre>
 </section>
 
 <section class="section" id="config">
-  <span class="eyebrow reveal">Section F</span>
+  <span class="eyebrow reveal">Section G</span>
   <h2 class="section-title reveal">Advanced configuration</h2>
   <p class="lede reveal">Everything is overridable via environment variables on the backend, or settings in the extension.</p>
 
@@ -973,9 +1054,27 @@ RUN </pre>
 </section>
 
 <section class="section pullquote" id="why">
-  <span class="eyebrow reveal">Section G</span>
+  <span class="eyebrow reveal">Section H</span>
   <blockquote class="reveal">This project intentionally runs on <span class="accent">your own machine</span> instead of a hosted API.</blockquote>
   <cite class="reveal">No billing surprises. No account required. No dependency on a server staying online. A small model was the whole point — it's light enough to not need the cloud in the first place.</cite>
+
+  <div class="reveal" style="margin-top:2.6rem; overflow-x:auto;">
+    <table class="compare">
+      <tr><th></th><th>This project</th><th>Typical cloud completion</th></tr>
+      <tr><td>Setup</td><td>Docker pull, or download a binary</td><td>Account + API key</td></tr>
+      <tr><td>Cost</td><td>Free — runs on hardware you already have</td><td>Pay per request or subscription</td></tr>
+      <tr><td>Latency</td><td>~0.7–1.4s, no network round-trip</td><td>Network round-trip + provider queue, variable</td></tr>
+      <tr><td>Works offline</td><td class="good">Yes</td><td class="muted">No</td></tr>
+      <tr><td>Your code leaves your machine</td><td class="good">Never</td><td class="muted">Every request</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="roadmap">
+  <span class="eyebrow reveal">Section I</span>
+  <h2 class="section-title reveal">What's next</h2>
+  <div class="reveal" style="margin:0.9rem 0 1.3rem;"><span class="pill"><span class="dot"></span>In progress</span></div>
+  <p class="lede reveal">Alongside this model, a parallel experiment: fine-tuning <span class="mono" style="color:var(--paper);">Qwen2.5-Coder-0.5B</span> with LoRA on the same corpus — <span class="mono">bigcode/the-stack-dedup</span>, interleaved Dockerfile/YAML/HCL — to see whether adapting a small pretrained code model produces stronger completions than training from zero. Training runs as real dual-GPU DDP across Kaggle's T4×2, launched as an independent process rather than forked from the notebook kernel. Results aren't in yet — this section updates once there's something worth comparing.</p>
 </section>
 
 <footer>
@@ -1003,17 +1102,48 @@ docker_auto_complete/<br>
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- scroll-reveal ---- */
+  /* ---- count-up numbers ---- */
+  function animateCount(el){
+    var to = parseFloat(el.getAttribute("data-to"));
+    var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+    if(isNaN(to)) return;
+    if(reduceMotion){ el.textContent = to.toFixed(decimals); return; }
+    var start = performance.now();
+    var duration = 1200 + Math.random() * 300;
+    (function frame(now){
+      var t = Math.min(1, (now - start) / duration);
+      var eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = (to * eased).toFixed(decimals);
+      if(t < 1) requestAnimationFrame(frame);
+    })(start);
+  }
+
+  /* ---- bar-chart grow-in ---- */
+  function growBars(container){
+    container.querySelectorAll(".bar-fill[data-width]").forEach(function(bar){
+      requestAnimationFrame(function(){ bar.style.width = bar.getAttribute("data-width"); });
+    });
+  }
+
+  /* ---- scroll-reveal (also triggers count-up / bar grow-in for the sections that need it) ---- */
   var revealEls = document.querySelectorAll(".reveal");
+  function activateExtras(el){
+    el.querySelectorAll(".cnum").forEach(animateCount);
+    if(el.classList.contains("bar-chart")) growBars(el);
+  }
   if("IntersectionObserver" in window && !reduceMotion){
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){
-        if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+        if(en.isIntersecting){
+          en.target.classList.add("in");
+          activateExtras(en.target);
+          io.unobserve(en.target);
+        }
       });
     }, {threshold:0.12});
     revealEls.forEach(function(el){ io.observe(el); });
   } else {
-    revealEls.forEach(function(el){ el.classList.add("in"); });
+    revealEls.forEach(function(el){ el.classList.add("in"); activateExtras(el); });
   }
 
   /* ---- active nav link on scroll ---- */
@@ -1167,6 +1297,24 @@ docker_auto_complete/<br>
   }
 
   nextLine();
+
+  /* ---- mouse parallax on the ambient rotor ---- */
+  if(!reduceMotion){
+    var rotorScene = document.querySelector(".rotor-scene");
+    if(rotorScene){
+      var targetX = 0, targetY = 0, curX = 0, curY = 0;
+      window.addEventListener("mousemove", function(e){
+        targetX = (e.clientX / window.innerWidth - 0.5) * -32;
+        targetY = (e.clientY / window.innerHeight - 0.5) * -22;
+      }, {passive:true});
+      (function raf(){
+        curX += (targetX - curX) * 0.05;
+        curY += (targetY - curY) * 0.05;
+        rotorScene.style.transform = "translate3d(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px,0)";
+        requestAnimationFrame(raf);
+      })();
+    }
+  }
 })();
 </script>
 
