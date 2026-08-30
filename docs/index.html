@@ -24,6 +24,10 @@
   --signal:#7FD858;
   --rust:#E2593A;
 
+  --glass-bg:rgba(23,30,39,0.5);
+  --glass-border:rgba(228,234,241,0.09);
+  --glass-hi:rgba(255,255,255,0.05);
+
   --font-display:'Big Shoulders Stencil', 'Arial Narrow', sans-serif;
   --font-body:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
@@ -56,6 +60,63 @@ body::before{
   opacity:0.035;
   mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- ambient 3D backdrop (behind the glass UI) ---------- */
+.ambient{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.ambient .glow{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+}
+.ambient .glow.a{
+  width:60vmax; height:60vmax;
+  right:-20vmax; top:-16vmax;
+  background:radial-gradient(circle, rgba(36,150,237,0.24), transparent 65%);
+}
+.ambient .glow.b{
+  width:46vmax; height:46vmax;
+  left:-16vmax; bottom:-12vmax;
+  background:radial-gradient(circle, rgba(36,150,237,0.13), transparent 65%);
+}
+
+.rotor-scene{
+  position:absolute;
+  top:2vh;
+  right:-8vw;
+  width:min(64vw, 920px);
+  height:min(64vw, 920px);
+  perspective:1600px;
+  filter:blur(20px) saturate(1.55);
+  opacity:0.88;
+  mix-blend-mode:screen;
+}
+.rotor{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transform:rotateX(-20deg) rotateY(0deg);
+}
+@media (prefers-reduced-motion: no-preference){
+  .rotor{ animation:spin3d 48s linear infinite; }
+}
+@keyframes spin3d{
+  from{ transform:rotateX(-20deg) rotateY(0deg); }
+  to{ transform:rotateX(-20deg) rotateY(360deg); }
+}
+.rotor .panel{
+  position:absolute;
+  left:50%; top:50%;
+  border-radius:14px;
+  border:2px solid rgba(150,200,245,0.8);
+  background:linear-gradient(155deg, rgba(36,150,237,0.6), rgba(36,150,237,0.14));
+  box-shadow:0 0 40px rgba(36,150,237,0.35);
 }
 
 a{color:var(--accent);}
@@ -114,13 +175,15 @@ h1,h2,h3{text-wrap:balance; margin:0;}
   position:fixed;
   top:0; left:0; bottom:0;
   width:var(--rail-w);
-  border-right:1px solid var(--line);
+  border-right:1px solid var(--glass-border);
   padding:1.6rem 1.4rem;
   display:flex;
   flex-direction:column;
   gap:1.6rem;
   z-index:50;
-  background:var(--ink);
+  background:var(--glass-bg);
+  backdrop-filter:blur(22px) saturate(1.4);
+  -webkit-backdrop-filter:blur(22px) saturate(1.4);
 }
 .railnav .brand{
   font-family:var(--font-display);
@@ -157,9 +220,11 @@ h1,h2,h3{text-wrap:balance; margin:0;}
 .railnav .rail-foot{margin-top:auto; font-family:var(--font-mono); font-size:0.7rem; color:var(--line);}
 .railnav .rail-foot .dot{width:6px; height:6px; border-radius:50%; background:var(--signal); display:inline-block; margin-right:0.4em; box-shadow:0 0 6px var(--signal);}
 
-.topbar{display:none;}
+.topbar{display:none; position:relative; z-index:1;}
 
 main{
+  position:relative;
+  z-index:1;
   margin-left:var(--rail-w);
   width:calc(100% - var(--rail-w));
   min-height:100vh;
@@ -195,10 +260,12 @@ main{
   font-size:0.72rem;
   letter-spacing:0.02em;
   color:var(--paper-dim);
-  border:1px solid var(--line);
+  border:1px solid var(--glass-border);
   border-radius:2px;
   padding:0.3rem 0.6rem;
-  background:var(--panel);
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 }
 .badge b{color:var(--accent); font-weight:600;}
 
@@ -236,11 +303,13 @@ main{
 /* ---------- demo window ---------- */
 .demo-wrap{margin-top:3rem;}
 .demo-window{
-  background:var(--panel-raised);
-  border:1px solid var(--line);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   border-radius:6px;
   overflow:hidden;
-  box-shadow:0 24px 60px -20px rgba(0,0,0,0.65);
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  box-shadow:inset 0 1px 0 var(--glass-hi), 0 24px 60px -20px rgba(0,0,0,0.65);
 }
 .demo-titlebar{
   display:flex;
@@ -281,6 +350,7 @@ main{
   min-height:260px;
   white-space:pre-wrap;
   word-break:break-word;
+  background:rgba(15,20,26,0.55);
 }
 .demo-body .ln{color:var(--paper-faint); display:inline-block; width:1.6em; user-select:none;}
 .demo-body .kw{color:var(--accent);}
@@ -333,10 +403,13 @@ main{
 @media (max-width:620px){.features{grid-template-columns:1fr;}}
 
 .card{
-  background:var(--panel);
-  border:1px solid var(--line);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   border-radius:4px;
   padding:1.3rem;
+  backdrop-filter:blur(16px) saturate(1.4);
+  -webkit-backdrop-filter:blur(16px) saturate(1.4);
+  box-shadow:inset 0 1px 0 var(--glass-hi);
   transition:border-color .15s ease, transform .15s ease;
 }
 .card:hover{border-color:var(--accent-soft); transform:translateY(-2px);}
@@ -355,11 +428,14 @@ main{
 }
 .flow-step{
   flex:1 0 150px;
-  background:var(--panel);
-  border:1px solid var(--line);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   border-radius:4px;
   padding:1rem 1.1rem;
   min-width:150px;
+  backdrop-filter:blur(14px) saturate(1.3);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:inset 0 1px 0 var(--glass-hi);
 }
 .flow-step .k{font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent-soft); display:block; margin-bottom:0.4rem;}
 .flow-step .v{font-size:0.85rem; color:var(--paper-dim); line-height:1.45;}
@@ -385,8 +461,8 @@ main{
 .spec-table td:last-child{font-family:var(--font-mono); color:var(--paper); text-align:right;}
 
 .stack-diagram{
-  background:var(--panel);
-  border:1px solid var(--line);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   border-radius:4px;
   padding:1.4rem;
   display:flex;
@@ -394,6 +470,9 @@ main{
   gap:0.5rem;
   font-family:var(--font-mono);
   font-size:0.8rem;
+  backdrop-filter:blur(16px) saturate(1.3);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  box-shadow:inset 0 1px 0 var(--glass-hi);
 }
 .stack-block{
   border:1px solid var(--line);
@@ -428,10 +507,13 @@ main{
 .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-top:2.4rem;}
 @media (max-width:760px){.stat-grid{grid-template-columns:1fr;}}
 .stat-tile{
-  background:var(--panel);
-  border:1px solid var(--line);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   border-radius:4px;
   padding:1.4rem 1.3rem;
+  backdrop-filter:blur(16px) saturate(1.3);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  box-shadow:inset 0 1px 0 var(--glass-hi);
 }
 .stat-tile .num{
   font-family:var(--font-display);
@@ -495,10 +577,13 @@ main{
 
 details.tshoot{
   margin-top:2.6rem;
-  border:1px solid var(--line);
+  border:1px solid var(--glass-border);
   border-radius:4px;
-  background:var(--panel);
+  background:var(--glass-bg);
   padding:1rem 1.2rem;
+  backdrop-filter:blur(16px) saturate(1.3);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  box-shadow:inset 0 1px 0 var(--glass-hi);
 }
 details.tshoot summary{
   cursor:pointer;
@@ -583,6 +668,21 @@ footer{
 </style>
 </head>
 <body>
+<div class="ambient" aria-hidden="true">
+  <div class="glow a"></div>
+  <div class="glow b"></div>
+  <div class="rotor-scene">
+    <div class="rotor">
+      <div class="panel" style="width:260px; height:160px; margin:-80px 0 0 -130px; transform: rotateY(0deg) translateZ(300px) translateY(-70px) rotateY(0deg) rotateX(8deg);"></div>
+      <div class="panel" style="width:190px; height:190px; margin:-95px 0 0 -95px; transform: rotateY(60deg) translateZ(300px) translateY(50px) rotateY(-60deg) rotateX(-6deg);"></div>
+      <div class="panel" style="width:230px; height:140px; margin:-70px 0 0 -115px; transform: rotateY(120deg) translateZ(300px) translateY(-30px) rotateY(-120deg) rotateX(10deg);"></div>
+      <div class="panel" style="width:170px; height:210px; margin:-105px 0 0 -85px; transform: rotateY(180deg) translateZ(300px) translateY(90px) rotateY(-180deg) rotateX(-12deg);"></div>
+      <div class="panel" style="width:220px; height:160px; margin:-80px 0 0 -110px; transform: rotateY(240deg) translateZ(300px) translateY(-100px) rotateY(-240deg) rotateX(6deg);"></div>
+      <div class="panel" style="width:160px; height:180px; margin:-90px 0 0 -80px; transform: rotateY(300deg) translateZ(300px) translateY(20px) rotateY(-300deg) rotateX(-8deg);"></div>
+    </div>
+  </div>
+</div>
+
 <nav class="topbar">
   <a class="brand" href="#top">Dockerfile Autocomplete</a>
   <a class="gh" href="https://github.com/S-ABISHEAK/docker_autocomplete_copilot" target="_blank" rel="noopener">GitHub ↗</a>
