@@ -25,8 +25,6 @@
 - [Configuration](#configuration)
 - [What I learned along the way](#what-i-learned-along-the-way)
 - [Known limitations](#known-limitations)
-- [Roadmap](#roadmap)
-- [Project structure](#project-structure)
 - [Why local, not cloud](#why-local-not-cloud)
 - [License](#license)
 
@@ -360,34 +358,6 @@ I'd rather you hear these from me:
 - **Mixed training data.** The model learned from Dockerfiles, YAML and Terraform together, so it can drift into another format. In my training-time samples, after an end-of-text token it happily started a YAML file.
 - **Platforms.** The Docker image is `linux/amd64`. The standalone binary is a Linux build, and no Windows or macOS binaries exist yet. The source install works anywhere Python and `onnxruntime` do.
 - **No authentication on the local server.** That's fine bound to `127.0.0.1`. Don't expose it to a network.
-
-## Roadmap
-
-Planned, not promised:
-
-- [ ] Handle the trailing-space tokenisation boundary in the prompt builder.
-- [ ] Export with a **KV cache** so the context window can approach the trained 256 tokens at low latency.
-- [ ] Build a held-out evaluation (perplexity, exact-match and next-line accuracy) and publish the results.
-- [ ] Export and compare the later checkpoints (steps 120,000 and 140,000) against v1.
-- [ ] Finish and evaluate the Qwen2.5-Coder-0.5B LoRA experiment, with int8 quantisation if it needs it.
-- [ ] Publish a GitHub Release with the Linux binary and the `.vsix`, plus Windows/macOS builds.
-- [ ] Add the training notebooks to this repo.
-- [ ] Publish the extension to the VS Code Marketplace.
-
-## Project structure
-
-```
-docker_auto_complete/
-├── backend/                 FastAPI service: api, context, prompt, validation, inference
-├── model/                   architecture, tokenizer; ONNX weights land in model/checkpoints/
-├── extension/               VS Code extension (TypeScript) and the packaged .vsix
-├── scripts/                 fetch_model, export_onnx, benchmark_onnx, strip_checkpoint,
-│                            phase0_quality_check, run_server
-├── finetuned_model/         Qwen2.5-Coder-0.5B LoRA fine-tuning notebook (experiment)
-├── docs/                    the project showcase site
-├── Dockerfile               runtime image (ONNX Runtime only, no PyTorch)
-└── dockerfile-autocomplete-server.spec    PyInstaller recipe for the standalone binary
-```
 
 ## Why local, not cloud
 
